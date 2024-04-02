@@ -20,7 +20,7 @@ import java.util.List;
 @RestController
 @Slf4j
 @RequestMapping("demo/v1/sapura")
-public class RestContorller {
+public class MainContorller {
 
     @Autowired
     SnowflakeRepository snowflakeRepository;
