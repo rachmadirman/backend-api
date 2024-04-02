@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,5 +42,14 @@ public class RestContorller {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
+    }
+
+
+    @PostMapping(value = "/forward", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> forwardData(HttpServletRequest httpServletRequest) throws Exception {
+
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("");
     }
 }
