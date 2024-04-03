@@ -53,10 +53,9 @@ public class MainController {
                 .body(result);
     }
 
-
-    @PostMapping(value = "/forward", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(value = "/forward", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> forwardData(@Valid @RequestBody ForwardRequest request,
-                                         HttpServletRequest httpServletRequest){
+            HttpServletRequest httpServletRequest) {
 
         PayloadRs payloadRs = forwardDataUsecase.forwardRequest(request);
 

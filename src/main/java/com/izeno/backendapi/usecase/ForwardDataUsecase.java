@@ -30,7 +30,7 @@ public class ForwardDataUsecase {
     @Autowired
     ObjectMapper objectMapper;
 
-    public PayloadRs forwardRequest(ForwardRequest request){
+    public PayloadRs forwardRequest(ForwardRequest request) {
 
         Gson gson = new Gson();
         PayloadRs payloadRs = new PayloadRs();
@@ -39,15 +39,19 @@ public class ForwardDataUsecase {
         List<SubmitMockRequest.Documents> documentsList = new ArrayList<>();
 
         try {
-            //Insert to batch table
-            String uuid = UUID.randomUUID().toString();  //used as batchid
+            // Insert to batch table
+            String uuid = UUID.randomUUID().toString(); // used as batchid
             int result = repository.insertBatchTable(request.getCsvfilename(), uuid);
 
-
-            for (ForwardRequest.CsvContent csv : request.getCsvContents()){
+            for (ForwardRequest.CsvContent csv : request.getCsvContents()) {
                 SubmitMockRequest.Documents documents = new SubmitMockRequest.Documents();
+
+                // construct document request
+                String encodedDocRequest = CommonUtils.stringToBase64(CommonUtils.generateRequestFormat(csv));
+
+                // set document request
                 documents.setFormat("JSON");
-                documents.setDocument(objectMapper.writeValueAsString(csv));
+                documents.setDocument(encodedDocRequest);
                 documents.setDocumentHash("Base64");
                 documents.setCodeNumber(csv.getEinvoicenumber());
 
@@ -56,33 +60,36 @@ public class ForwardDataUsecase {
 
             lhdnRequest.setDocuments(documentsList);
 
-            //Call LDHN Mock API
+            // Call LDHN Mock API
             SubmitMockResponse response = lhdnService.submitDocToLHDN(lhdnRequest);
 
-            //Insert into batch table details
+            // Insert into batch table details
             String submissionUID = response.getSubmissionUID();
-            String einvoicedocument = CommonUtils.stringToBase64(objectMapper.writeValueAsString(request.getCsvContents()));
 
-            //Accepted Documents
-            for (SubmitMockResponse.AcceptedDocuments ad : response.getAcceptedDocuments()){
-                int rad = repository.insertBatchDetailsTable(ad.getInvoiceCodeNumber(), einvoicedocument, CommonUtils.getCurrentDate(), "ACCEPTED", uuid, ad.getUuid());
+            String einvoicedocument = CommonUtils
+                    .stringToBase64(objectMapper.writeValueAsString(request.getCsvContents()));
+
+            // Accepted Documents
+            for (SubmitMockResponse.AcceptedDocuments ad : response.getAcceptedDocuments()) {
+                int rad = repository.insertBatchDetailsTable(ad.getInvoiceCodeNumber(), einvoicedocument,
+                        CommonUtils.getCurrentDate(), "ACCEPTED", uuid, ad.getUuid());
             }
 
-            //Rejected Documents
-            for (SubmitMockResponse.RejectedDocuments rd : response.getRejectedDocuments()){
-                int rrd = repository.insertBatchDetailsTable(rd.getInvoiceCodeNumber(), einvoicedocument, CommonUtils.getCurrentDate(), "REJECTED", uuid, null);
+            // Rejected Documents
+            for (SubmitMockResponse.RejectedDocuments rd : response.getRejectedDocuments()) {
+                int rrd = repository.insertBatchDetailsTable(rd.getInvoiceCodeNumber(), einvoicedocument,
+                        CommonUtils.getCurrentDate(), "REJECTED", uuid, null);
             }
 
-            //Update Data Table
+            // Update Data Table
             int rows = repository.updateBatchTable("COMPLETED", submissionUID, uuid);
 
-            //set success response
+            // set success response
             payloadRs.setStatus("Success");
             payloadRs.setStatusCode(200);
             payloadRs.setStatusDescription("Success Forward Data");
 
             return payloadRs;
-
 
         } catch (Exception e) {
             log.error("[ERROR IN FORWARD DATA : {}]", e.getMessage());

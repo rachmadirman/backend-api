@@ -27,7 +27,7 @@ public class SnowflakeRepository {
             List<BatchTable> result = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(BatchTable.class));
             log.info("[SUCCESS FETCH BATCH TABLE DATA, TOTAL : {}]", result.size());
             return result;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());
             throw new Exception();
@@ -38,10 +38,11 @@ public class SnowflakeRepository {
         String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE ORDER BY \"requestdate\" ASC ";
 
         try {
-            List<BatchDetailTable> result = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(BatchDetailTable.class));
+            List<BatchDetailTable> result = jdbcTemplate.query(sql,
+                    new BeanPropertyRowMapper<>(BatchDetailTable.class));
             log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", result.size());
             return result;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());
             throw new Exception();
@@ -50,13 +51,15 @@ public class SnowflakeRepository {
 
     public int insertBatchTable(String filename, String batchid) throws Exception {
         String sql = "INSERT INTO POC_SAPURA.API_INGESTION.BATCH_TABLE\n" +
-                "(\"batchid\", \"csvfilename\", \"start_date\", \"end_date\", \"status\", \"submissionuuid\") VALUES\n" +
+                "(\"batchid\", \"csvfilename\", \"start_date\", \"end_date\", \"status\", \"submissionuuid\") VALUES\n"
+                +
                 "(?, ?, ?, ?, ?, ?)";
 
         try {
-            int result = jdbcTemplate.update(sql, batchid, filename, CommonUtils.getCurrentDate(), null, "INPROGRESS", null);
+            int result = jdbcTemplate.update(sql, batchid, filename, CommonUtils.getCurrentDate(), null, "INPROGRESS",
+                    null);
             return result;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             log.error("[FAILED TO INSERT BATCH TABLE DATA, BATCHID : {}, ERROR : {} ]", batchid, e.getMessage());
             throw new Exception();
@@ -64,13 +67,14 @@ public class SnowflakeRepository {
     }
 
     public int updateBatchTable(String status, String submissionuuid, String batchid) throws Exception {
-        String sql = "UPDATE POC_SAPURA.API_INGESTION.BATCH_TABLE SET \"status\"=?, \"end_date\"=?, \"submissionuuid\"=? \n" +
+        String sql = "UPDATE POC_SAPURA.API_INGESTION.BATCH_TABLE SET \"status\"=?, \"end_date\"=?, \"submissionuuid\"=? \n"
+                +
                 "WHERE \"batchid\" = ?";
 
         try {
             int result = jdbcTemplate.update(sql, status, CommonUtils.getCurrentDate(), submissionuuid, batchid);
             return result;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             log.error("[FAILED TO UPDATE BATCH TABLE DATA, BATCHID : {}, ERROR : {} ]", batchid, e.getMessage());
             throw new Exception();
@@ -78,20 +82,23 @@ public class SnowflakeRepository {
     }
 
     public int insertBatchDetailsTable(String einvoicenumber,
-                                       String einvoicedocument,
-                                       String requestdate,
-                                       String validationstatus,
-                                       String batchid,
-                                       String uuid) throws Exception {
-        String sql = "INSERT INTO POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE (\"einvoicenumber\", \"einvoicedocument\", \"requestdate\", \"validationstatus\", \"batchid\", \"uuid\")\n" +
+            String einvoicedocument,
+            String requestdate,
+            String validationstatus,
+            String batchid,
+            String uuid) throws Exception {
+        String sql = "INSERT INTO POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE (\"einvoicenumber\", \"einvoicedocument\", \"requestdate\", \"validationstatus\", \"batchid\", \"uuid\")\n"
+                +
                 "VALUES (?,?, ?, ?, ?, ?)";
 
         try {
-            int result = jdbcTemplate.update(sql, einvoicenumber, einvoicedocument, requestdate, validationstatus, batchid, uuid);
+            int result = jdbcTemplate.update(sql, einvoicenumber, einvoicedocument, requestdate, validationstatus,
+                    batchid, uuid);
             return result;
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
-            log.error("[FAILED TO INSERT BATCH DETAILS TABLE DATA, BATCHID : {}, ERROR : {} ]", batchid, e.getMessage());
+            log.error("[FAILED TO INSERT BATCH DETAILS TABLE DATA, BATCHID : {}, ERROR : {} ]", batchid,
+                    e.getMessage());
             throw new Exception();
         }
     }
