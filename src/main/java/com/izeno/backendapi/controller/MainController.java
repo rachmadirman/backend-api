@@ -4,18 +4,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.izeno.backendapi.entity.BatchDetailTable;
 import com.izeno.backendapi.entity.BatchTable;
 import com.izeno.backendapi.entity.SubmitMockResponse;
+import com.izeno.backendapi.model.ForwardRequest;
+import com.izeno.backendapi.model.PayloadRs;
 import com.izeno.backendapi.repository.SnowflakeRepository;
+import com.izeno.backendapi.usecase.ForwardDataUsecase;
 import com.izeno.backendapi.usecase.SubmitToMock;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -29,6 +31,9 @@ public class MainController {
 
     @Autowired
     SubmitToMock submitToMock;
+
+    @Autowired
+    ForwardDataUsecase forwardDataUsecase;
 
     @GetMapping(value = "/fetch/batch", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> getAllData(HttpServletRequest httpServletRequest) throws Exception {
@@ -46,6 +51,17 @@ public class MainController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
+    }
+
+
+    @PostMapping(value = "/forward", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<?> forwardData(@Valid @RequestBody ForwardRequest request,
+                                         HttpServletRequest httpServletRequest){
+
+        PayloadRs payloadRs = forwardDataUsecase.forwardRequest(request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(payloadRs);
     }
 
     // only to test mock call
