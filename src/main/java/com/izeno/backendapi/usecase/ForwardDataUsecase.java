@@ -1,15 +1,16 @@
 package com.izeno.backendapi.usecase;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
 import com.izeno.backendapi.entity.SubmitMockRequest;
 import com.izeno.backendapi.entity.SubmitMockResponse;
 import com.izeno.backendapi.model.ForwardRequest;
+import com.izeno.backendapi.model.ForwardRequestV2;
 import com.izeno.backendapi.model.PayloadRs;
 import com.izeno.backendapi.repository.SnowflakeRepository;
 import com.izeno.backendapi.service.LHDNService;
 import com.izeno.backendapi.utils.CommonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -30,54 +31,37 @@ public class ForwardDataUsecase {
     @Autowired
     ObjectMapper objectMapper;
 
-    public PayloadRs forwardRequest(ForwardRequest request) {
+    public PayloadRs forwardRequest(ForwardRequestV2 request) {
 
-        Gson gson = new Gson();
         PayloadRs payloadRs = new PayloadRs();
 
         SubmitMockRequest lhdnRequest = new SubmitMockRequest();
         List<SubmitMockRequest.Documents> documentsList = new ArrayList<>();
 
+        String filename = request.getCsvfilename().replace(".csv", ".json");
+
         try {
             // Insert to batch table
             String uuid = UUID.randomUUID().toString(); // used as batchid
-            int result = repository.insertBatchTable(request.getCsvfilename(), uuid);
+            int result = repository.insertBatchTable(StringUtils.substringBefore(request.getCsvfilename(), ".csv"), uuid);
 
-            for (ForwardRequest.CsvContent csv : request.getCsvContents()) {
-                SubmitMockRequest.Documents documents = new SubmitMockRequest.Documents();
-
-                // construct document request
-                String encodedDocRequest = CommonUtils.stringToBase64(CommonUtils.generateRequestFormat(csv));
-
-                // set document request
-                documents.setFormat("JSON");
-                documents.setDocument(encodedDocRequest);
-                documents.setDocumentHash("Base64");
-                documents.setCodeNumber(csv.getEinvoicenumber());
-
-                documentsList.add(documents);
-            }
-
-            lhdnRequest.setDocuments(documentsList);
 
             // Call LDHN Mock API
-            SubmitMockResponse response = lhdnService.submitDocToLHDN(lhdnRequest);
+            SubmitMockResponse response = lhdnService.submitDocToLHDN(request.getDocuments());
 
             // Insert into batch table details
             String submissionUID = response.getSubmissionUID();
 
-            String einvoicedocument = CommonUtils
-                    .stringToBase64(objectMapper.writeValueAsString(request.getCsvContents()));
 
             // Accepted Documents
             for (SubmitMockResponse.AcceptedDocuments ad : response.getAcceptedDocuments()) {
-                int rad = repository.insertBatchDetailsTable(ad.getInvoiceCodeNumber(), request.getCsvfilename().concat(".json"),
+                int rad = repository.insertBatchDetailsTable(ad.getInvoiceCodeNumber(), filename,
                         CommonUtils.getCurrentDate(), "ACCEPTED", uuid, ad.getUuid());
             }
 
             // Rejected Documents
             for (SubmitMockResponse.RejectedDocuments rd : response.getRejectedDocuments()) {
-                int rrd = repository.insertBatchDetailsTable(rd.getInvoiceCodeNumber(), request.getCsvfilename().concat(".json"),
+                int rrd = repository.insertBatchDetailsTable(rd.getInvoiceCodeNumber(), filename,
                         CommonUtils.getCurrentDate(), "REJECTED", uuid, null);
             }
 

@@ -6,6 +6,7 @@ import com.google.gson.Gson;
 import com.izeno.backendapi.config.RestTemplateConfig;
 import com.izeno.backendapi.entity.SubmitMockRequest;
 import com.izeno.backendapi.entity.SubmitMockResponse;
+import com.izeno.backendapi.model.ForwardRequestV2;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
@@ -24,7 +25,7 @@ public class LHDNService {
     @Autowired
     ObjectMapper objectMapper;
 
-    public SubmitMockResponse submitDocToLHDN(SubmitMockRequest requests) throws Exception {
+    public SubmitMockResponse submitDocToLHDN(List<ForwardRequestV2.Documents> requests) throws Exception {
 
         SubmitMockResponse response = new SubmitMockResponse();
         String responseBody = "";

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.izeno.backendapi.entity.BatchDetailTable;
 import com.izeno.backendapi.entity.BatchTable;
 import com.izeno.backendapi.entity.SubmitMockResponse;
-import com.izeno.backendapi.model.ForwardRequest;
+import com.izeno.backendapi.model.ForwardRequestV2;
 import com.izeno.backendapi.model.PayloadRs;
 import com.izeno.backendapi.repository.SnowflakeRepository;
 import com.izeno.backendapi.usecase.ForwardDataUsecase;
@@ -54,7 +54,7 @@ public class MainController {
     }
 
     @PostMapping(value = "/forward", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> forwardData(@Valid @RequestBody ForwardRequest request,
+    public ResponseEntity<?> forwardData(@Valid @RequestBody ForwardRequestV2 request,
             HttpServletRequest httpServletRequest) {
 
         PayloadRs payloadRs = forwardDataUsecase.forwardRequest(request);
