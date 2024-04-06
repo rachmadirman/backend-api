@@ -21,7 +21,7 @@ public class SnowflakeRepository {
     JdbcTemplate jdbcTemplate;
 
     public List<BatchTable> fetchBatchTable() throws Exception {
-        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_TABLE ORDER BY \"start_date\" ASC ";
+        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_TABLE ORDER BY \"start_date\" DESC ";
 
         try {
             List<BatchTable> result = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(BatchTable.class));
@@ -35,10 +35,25 @@ public class SnowflakeRepository {
     }
 
     public List<BatchDetailTable> fetchBatchDetailTable() throws Exception {
-        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE ORDER BY \"requestdate\" ASC ";
+        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE ORDER BY \"requestdate\" DESC ";
 
         try {
             List<BatchDetailTable> result = jdbcTemplate.query(sql,
+                    new BeanPropertyRowMapper<>(BatchDetailTable.class));
+            log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", result.size());
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());
+            throw new Exception();
+        }
+    }
+
+    public List<BatchDetailTable> fetchBatchDetailTableById(String batchId) throws Exception {
+        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE WHERE \"batchid\" = ? ORDER BY \"requestdate\" DESC";
+
+        try {
+            List<BatchDetailTable> result = jdbcTemplate.query(sql, new Object[]{batchId},
                     new BeanPropertyRowMapper<>(BatchDetailTable.class));
             log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", result.size());
             return result;

@@ -6,7 +6,7 @@ import lombok.Data;
 
 @Data
 @JsonPropertyOrder({ "batch_id", "einvoice_number", "einvoice_document", "request_date", "validation_status",
-        "reference_id" })
+        "reference_id", "reason" })
 public class BatchDetailTable {
     @JsonProperty("einvoice_number")
     private String einvoicenumber;
@@ -20,4 +20,6 @@ public class BatchDetailTable {
     private String batchid;
     @JsonProperty("reference_id")
     private String uuid;
+    @JsonProperty("reason")
+    private String reason;
 }

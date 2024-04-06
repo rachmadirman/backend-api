@@ -53,6 +53,16 @@ public class MainController {
                 .body(result);
     }
 
+    @GetMapping(value = "/fetch/detailsbyid/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getDetailsDataById(@PathVariable String id,
+            HttpServletRequest httpServletRequest) throws Exception {
+
+        List<BatchDetailTable> result = snowflakeRepository.fetchBatchDetailTableById(id);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(result);
+    }
+
     @PostMapping(value = "/forward", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> forwardData(@Valid @RequestBody ForwardRequestV2 request,
             HttpServletRequest httpServletRequest) {
