@@ -2,7 +2,10 @@ package com.izeno.backendapi.repository;
 
 import com.izeno.backendapi.entity.BatchDetailTable;
 import com.izeno.backendapi.entity.BatchTable;
+import com.izeno.backendapi.entity.UserConfig;
+import com.izeno.backendapi.model.PayloadRs;
 import com.izeno.backendapi.utils.CommonUtils;
+import jakarta.validation.Payload;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -57,6 +60,41 @@ public class SnowflakeRepository {
                     new BeanPropertyRowMapper<>(BatchDetailTable.class));
             log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", result.size());
             return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());
+            throw new Exception();
+        }
+    }
+
+
+    public List<UserConfig> fetchUserConfig() throws Exception {
+        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.USER_TABLE";
+
+        try {
+            List<UserConfig> result = jdbcTemplate.query(sql,  new BeanPropertyRowMapper<>(UserConfig.class));
+            log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", result.size());
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());
+            throw new Exception();
+        }
+    }
+
+    public PayloadRs updateUserConfig(UserConfig req) throws Exception {
+
+        PayloadRs payloadRs = new PayloadRs();
+        String sql = "UPDATE POC_SAPURA.API_INGESTION.USER_TABLE SET \"apiurl\" = ?, \"clientid\" = ?, \"token\" = ?, \"environment\" = ?";
+
+        try {
+            int  result = jdbcTemplate.update(sql,  req.getApiurl(), req.getClientid(), req.getToken(), req.getEnvironment());
+
+            payloadRs.setStatus("Success");
+            payloadRs.setStatusDescription("Success update LHDN Config");
+            payloadRs.setStatusCode(200);
+
+            return payloadRs;
         } catch (Exception e) {
             e.printStackTrace();
             log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());

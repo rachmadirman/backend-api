@@ -38,7 +38,7 @@ public class ForwardDataUsecase {
         SubmitMockRequest lhdnRequest = new SubmitMockRequest();
         List<SubmitMockRequest.Documents> documentsList = new ArrayList<>();
 
-        String filename = request.getCsvfilename().replace(".csv", ".json");
+        String filename = StringUtils.substringBefore(request.getCsvfilename(), ".csv");
 
         try {
             // Insert to batch table

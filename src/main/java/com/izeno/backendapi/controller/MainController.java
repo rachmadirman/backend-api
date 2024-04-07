@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.izeno.backendapi.entity.BatchDetailTable;
 import com.izeno.backendapi.entity.BatchTable;
 import com.izeno.backendapi.entity.SubmitMockResponse;
+import com.izeno.backendapi.entity.UserConfig;
 import com.izeno.backendapi.model.ForwardRequestV2;
 import com.izeno.backendapi.model.PayloadRs;
 import com.izeno.backendapi.repository.SnowflakeRepository;
@@ -61,6 +62,25 @@ public class MainController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
+    }
+
+    @GetMapping(value = "/config/details", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getConfigDetails(HttpServletRequest httpServletRequest) throws Exception {
+
+        List<UserConfig> result = snowflakeRepository.fetchUserConfig();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(result);
+    }
+
+    @PostMapping(value = "/config/details", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> updateConfigDetails(@Valid @RequestBody UserConfig request,
+                                                 HttpServletRequest httpServletRequest) throws Exception {
+
+        PayloadRs payloadRs = snowflakeRepository.updateUserConfig(request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(payloadRs);
     }
 
     @PostMapping(value = "/forward", produces = { MediaType.APPLICATION_JSON_VALUE })
