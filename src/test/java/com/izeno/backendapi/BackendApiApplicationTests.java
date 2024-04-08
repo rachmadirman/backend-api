@@ -9,11 +9,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 class BackendApiApplicationTests {
 
 	@Test
-	void contextLoads() {
+	void contextLoads() throws Exception {
 	//	System.out.println(CommonUtils.getCurrentDate());
 	//	System.out.println(CommonUtils.stringToBase64("test"));
 
-		System.out.println(FileController.uploadFiles());
+	//	System.out.println(FileController.uploadFiles());
 
 
 	}

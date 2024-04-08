@@ -67,6 +67,21 @@ public class SnowflakeRepository {
         }
     }
 
+    public List<BatchDetailTable> fetchBatchDetailTableByIdRejected(String batchId) throws Exception {
+        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE WHERE \"batchid\" = ? AND \"validationstatus\" = 'REJECTED' ORDER BY \"requestdate\" DESC";
+
+        try {
+            List<BatchDetailTable> result = jdbcTemplate.query(sql, new Object[]{batchId},
+                    new BeanPropertyRowMapper<>(BatchDetailTable.class));
+            log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA FOR REJECTED DOC, TOTAL : {}]", result.size());
+            return result;
+        } catch (Exception e) {
+            e.printStackTrace();
+            log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());
+            throw new Exception();
+        }
+    }
+
 
     public List<UserConfig> fetchUserConfig() throws Exception {
         String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.USER_TABLE";
@@ -139,14 +154,15 @@ public class SnowflakeRepository {
             String requestdate,
             String validationstatus,
             String batchid,
-            String uuid) throws Exception {
-        String sql = "INSERT INTO POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE (\"einvoicenumber\", \"einvoicedocument\", \"requestdate\", \"validationstatus\", \"batchid\", \"uuid\")\n"
-                +
-                "VALUES (?,?, ?, ?, ?, ?)";
+            String uuid,
+            String reason) throws Exception {
+        String sql = "INSERT INTO POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE " +
+                "(\"einvoicenumber\", \"einvoicedocument\", \"requestdate\", \"validationstatus\", \"batchid\", \"uuid\", \"reason\")\n" +
+                "VALUES (?,?,?,?,?,?,?)";
 
         try {
             int result = jdbcTemplate.update(sql, einvoicenumber, einvoicedocument, requestdate, validationstatus,
-                    batchid, uuid);
+                    batchid, uuid, reason);
             return result;
         } catch (Exception e) {
             e.printStackTrace();

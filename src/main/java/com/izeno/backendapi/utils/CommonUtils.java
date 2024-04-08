@@ -1,11 +1,22 @@
 package com.izeno.backendapi.utils;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 
+import com.izeno.backendapi.entity.BatchDetailTable;
 import com.izeno.backendapi.model.ForwardRequest.CsvContent;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVPrinter;
+import org.apache.commons.csv.QuoteMode;
 
 public class CommonUtils {
 
@@ -45,5 +56,38 @@ public class CommonUtils {
                 "\\t\\t\\t\\t3MB. Screen 1440x900\",\"languageID\":\"EN\"}],\"Name\":[{\"_\":\"Labtop computer\"}],\"SellersItemIdentification\":[{\"ID\":[{\"_\":\"JB007\"}]}],\"StandardItemIdentification\":[{\"ID\":[{\"_\":\"1234567890124\",\"schemeID\":\"GTIN\",\"schemeAgencyID\":\"9\"}]}],\"CommodityClassification\":[{\"ItemClassificationCode\":[{\"_\":\"12344321\",\"listAgencyID\":\"113\",\"listID\":\"UNSPSC\"}]},{\"ItemClassificationCode\":[{\"_\":\"65434568\",\"listAgencyID\":\"2\",\"listID\":\"CPV\"}]}],\"ClassifiedTaxCategory\":[{\"ID\":[{\"_\":\"S\",\"schemeID\":\"UN/ECE 5305\",\"schemeAgencyID\":\"6\"}],\"Percent\":[{\"_\":20}],\"TaxScheme\":[{\"ID\":[{\"_\":\"VAT\",\"schemeID\":\"UN/ECE 5153\",\"schemeAgencyID\":\"6\"}]}]}],\"AdditionalItemProperty\":[{\"Name\":[{\"_\":\"Color\"}],\"Value\":[{\"_\":\"black\"}]}]}],\"Price\":[{\"PriceAmount\":[{\"_\":1273,\"currencyID\":\"EUR\"}],\"BaseQuantity\":[{\"_\":1,\"unitCode\":\"C62\"}],\"AllowanceCharge\":[{\"ChargeIndicator\":[{\"_\":false}],\"AllowanceChargeReason\":[{\"_\":\"Contract\"}],\"MultiplierFactorNumeric\":[{\"_\":0.15}],\"Amount\":[{\"_\":225,\"currencyID\":\"EUR\"}],\"BaseAmount\":[{\"_\":1500,\"currencyID\":\"EUR\"}]}]}]},{\"ID\":[{\"_\":\"2\"}],\"Note\":[{\"_\":\"Cover is slightly damaged.\"}],\"InvoicedQuantity\":[{\"_\":-1,\"unitCode\":\"C62\"}],\"LineExtensionAmount\":[{\"_\":-3.96,\"currencyID\":\"EUR\"}],\"OrderLineReference\":[{\"LineID\":[{\"_\":\"5\"}]}],\"TaxTotal\":[{\"TaxAmount\":[{\"_\":-0.396,\"currencyID\":\"EUR\"}]}],\"Item\":[{\"Name\":[{\"_\":\"Returned \\\"Advanced computing\\\" book\"}],\"SellersItemIdentification\":[{\"ID\":[{\"_\":\"JB008\"}]}],\"StandardItemIdentification\":[{\"ID\":[{\"_\":\"1234567890125\",\"schemeID\":\"GTIN\",\"schemeAgencyID\":\"9\"}]}],\"CommodityClassification\":[{\"ItemClassificationCode\":[{\"_\":\"32344324\",\"listAgencyID\":\"113\",\"listID\":\"UNSPSC\"}]},{\"ItemClassificationCode\":[{\"_\":\"65434567\",\"listAgencyID\":\"2\",\"listID\":\"CPV\"}]}],\"ClassifiedTaxCategory\":[{\"ID\":[{\"_\":\"AA\",\"schemeID\":\"UN/ECE 5305\",\"schemeAgencyID\":\"6\"}],\"Percent\":[{\"_\":10}],\"TaxScheme\":[{\"ID\":[{\"_\":\"VAT\",\"schemeID\":\"UN/ECE 5153\",\"schemeAgencyID\":\"6\"}]}]}]}],\"Price\":[{\"PriceAmount\":[{\"_\":3.96,\"currencyID\":\"EUR\"}],\"BaseQuantity\":[{\"_\":1,\"unitCode\":\"C62\"}]}]},{\"ID\":[{\"_\":\"3\"}],\"InvoicedQuantity\":[{\"_\":2,\"unitCode\":\"C62\"}],\"LineExtensionAmount\":[{\"_\":4.96,\"currencyID\":\"EUR\"}],\"OrderLineReference\":[{\"LineID\":[{\"_\":\"3\"}]}],\"TaxTotal\":[{\"TaxAmount\":[{\"_\":0.496,\"currencyID\":\"EUR\"}]}],\"Item\":[{\"Name\":[{\"_\":\"\\\"Computing for dummies\\\" book\"}],\"SellersItemIdentification\":[{\"ID\":[{\"_\":\"JB009\"}]}],\"StandardItemIdentification\":[{\"ID\":[{\"_\":\"1234567890126\",\"schemeID\":\"GTIN\",\"schemeAgencyID\":\"9\"}]}],\"CommodityClassification\":[{\"ItemClassificationCode\":[{\"_\":\"32344324\",\"listAgencyID\":\"113\",\"listID\":\"UNSPSC\"}]},{\"ItemClassificationCode\":[{\"_\":\"65434566\",\"listAgencyID\":\"2\",\"listID\":\"CPV\"}]}],\"ClassifiedTaxCategory\":[{\"ID\":[{\"_\":\"AA\",\"schemeID\":\"UN/ECE 5305\",\"schemeAgencyID\":\"6\"}],\"Percent\":[{\"_\":10}],\"TaxScheme\":[{\"ID\":[{\"_\":\"VAT\",\"schemeID\":\"UN/ECE 5153\",\"schemeAgencyID\":\"6\"}]}]}]}],\"Price\":[{\"PriceAmount\":[{\"_\":2.48,\"currencyID\":\"EUR\"}],\"BaseQuantity\":[{\"_\":1,\"unitCode\":\"C62\"}],\"AllowanceCharge\":[{\"ChargeIndicator\":[{\"_\":false}],\"AllowanceChargeReason\":[{\"_\":\"Contract\"}],\"MultiplierFactorNumeric\":[{\"_\":0.1}],\"Amount\":[{\"_\":0.275,\"currencyID\":\"EUR\"}],\"BaseAmount\":[{\"_\":2.75,\"currencyID\":\"EUR\"}]}]}]},{\"ID\":[{\"_\":\"4\"}],\"InvoicedQuantity\":[{\"_\":-1,\"unitCode\":\"C62\"}],\"LineExtensionAmount\":[{\"_\":-25,\"currencyID\":\"EUR\"}],\"OrderLineReference\":[{\"LineID\":[{\"_\":\"2\"}]}],\"TaxTotal\":[{\"TaxAmount\":[{\"_\":0,\"currencyID\":\"EUR\"}]}],\"Item\":[{\"Name\":[{\"_\":\"Returned IBM 5150 desktop\"}],\"SellersItemIdentification\":[{\"ID\":[{\"_\":\"JB010\"}]}],\"StandardItemIdentification\":[{\"ID\":[{\"_\":\"1234567890127\",\"schemeID\":\"GTIN\",\"schemeAgencyID\":\"9\"}]}],\"CommodityClassification\":[{\"ItemClassificationCode\":[{\"_\":\"12344322\",\"listAgencyID\":\"113\",\"listID\":\"UNSPSC\"}]},{\"ItemClassificationCode\":[{\"_\":\"65434565\",\"listAgencyID\":\"2\",\"listID\":\"CPV\"}]}],\"ClassifiedTaxCategory\":[{\"ID\":[{\"_\":\"E\",\"schemeID\":\"UN/ECE 5305\",\"schemeAgencyID\":\"6\"}],\"Percent\":[{\"_\":0}],\"TaxScheme\":[{\"ID\":[{\"_\":\"VAT\",\"schemeID\":\"UN/ECE 5153\",\"schemeAgencyID\":\"6\"}]}]}]}],\"Price\":[{\"PriceAmount\":[{\"_\":25,\"currencyID\":\"EUR\"}],\"BaseQuantity\":[{\"_\":1,\"unitCode\":\"C62\"}]}]},{\"ID\":[{\"_\":\"5\"}],\"InvoicedQuantity\":[{\"_\":250,\"unitCode\":\"C62\"}],\"LineExtensionAmount\":[{\"_\":187.5,\"currencyID\":\"EUR\"}],\"AccountingCost\":[{\"_\":\"BookingCode002\"}],\"OrderLineReference\":[{\"LineID\":[{\"_\":\"4\"}]}],\"TaxTotal\":[{\"TaxAmount\":[{\"_\":37.5,\"currencyID\":\"EUR\"}]}],\"Item\":[{\"Name\":[{\"_\":\"Network cable\"}],\"SellersItemIdentification\":[{\"ID\":[{\"_\":\"JB011\"}]}],\"StandardItemIdentification\":[{\"ID\":[{\"_\":\"1234567890128\",\"schemeID\":\"GTIN\",\"schemeAgencyID\":\"9\"}]}],\"CommodityClassification\":[{\"ItemClassificationCode\":[{\"_\":\"12344325\",\"listAgencyID\":\"113\",\"listID\":\"UNSPSC\"}]},{\"ItemClassificationCode\":[{\"_\":\"65434564\",\"listAgencyID\":\"2\",\"listID\":\"CPV\"}]}],\"ClassifiedTaxCategory\":[{\"ID\":[{\"_\":\"S\",\"schemeID\":\"UN/ECE 5305\",\"schemeAgencyID\":\"6\"}],\"Percent\":[{\"_\":20}],\"TaxScheme\":[{\"ID\":[{\"_\":\"VAT\",\"schemeID\":\"UN/ECE 5153\",\"schemeAgencyID\":\"6\"}]}]}],\"AdditionalItemProperty\":[{\"Name\":[{\"_\":\"Type\"}],\"Value\":[{\"_\":\"Cat5\"}]}]}],\"Price\":[{\"PriceAmount\":[{\"_\":0.75,\"currencyID\":\"EUR\"}],\"BaseQuantity\":[{\"_\":1,\"unitCode\":\"C62\"}]}]}]}]}";
 
         return formRequest;
+    }
+
+
+    public static ByteArrayInputStream streamToCSV(List<BatchDetailTable> tableList){
+
+        String[] header = {"batchid", "einvoicenumber",  "requestdate", "validationstatus","reason"};
+        CSVFormat format = CSVFormat.DEFAULT.builder()
+                .setHeader(header)
+                .build();
+
+        try {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);
+
+
+            for (BatchDetailTable b : tableList){
+                List<String> data = Arrays.asList(
+                        b.getBatchid(),
+                        b.getEinvoicenumber(),
+                        b.getRequestdate(),
+                        b.getValidationstatus(),
+                        b.getReason()
+                );
+                csvPrinter.printRecord(data);
+            }
+
+
+            csvPrinter.flush();
+            return new ByteArrayInputStream(out.toByteArray());
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

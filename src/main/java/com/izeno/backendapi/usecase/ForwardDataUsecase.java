@@ -56,13 +56,17 @@ public class ForwardDataUsecase {
             // Accepted Documents
             for (SubmitMockResponse.AcceptedDocuments ad : response.getAcceptedDocuments()) {
                 int rad = repository.insertBatchDetailsTable(ad.getInvoiceCodeNumber(), filename,
-                        CommonUtils.getCurrentDate(), "ACCEPTED", uuid, ad.getUuid());
+                        CommonUtils.getCurrentDate(), "ACCEPTED", uuid, ad.getUuid(), "");
             }
 
             // Rejected Documents
             for (SubmitMockResponse.RejectedDocuments rd : response.getRejectedDocuments()) {
+                SubmitMockResponse.Error error = rd.getError();
+
+                String erros = error.getCode().concat("-").concat(error.getMessage());
+
                 int rrd = repository.insertBatchDetailsTable(rd.getInvoiceCodeNumber(), filename,
-                        CommonUtils.getCurrentDate(), "REJECTED", uuid, null);
+                        CommonUtils.getCurrentDate(), "REJECTED", uuid, null, erros);
             }
 
             // Update Data Table
