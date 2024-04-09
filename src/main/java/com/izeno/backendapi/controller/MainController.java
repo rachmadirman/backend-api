@@ -9,6 +9,7 @@ import com.izeno.backendapi.model.ForwardRequestV2;
 import com.izeno.backendapi.model.PayloadRs;
 import com.izeno.backendapi.repository.SnowflakeRepository;
 import com.izeno.backendapi.service.CSVService;
+import com.izeno.backendapi.usecase.DownloadUsecase;
 import com.izeno.backendapi.usecase.ForwardDataUsecase;
 import com.izeno.backendapi.usecase.SubmitToMock;
 
@@ -43,6 +44,11 @@ public class MainController {
 
     @Autowired
     ForwardDataUsecase forwardDataUsecase;
+
+    @Autowired
+    DownloadUsecase downloadUsecase;
+
+
 
     @GetMapping(value = "/fetch/batch", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> getAllData(HttpServletRequest httpServletRequest) throws Exception {
@@ -81,6 +87,26 @@ public class MainController {
 
         return ResponseEntity.ok()
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fileName)
+                .contentType(MediaType.parseMediaType("application/csv"))
+                .body(file);
+    }
+
+    @GetMapping(value = "/csv/download/{filename}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<Resource> downloadCSV(@PathVariable String filename,
+                                                HttpServletRequest httpServletRequest) throws Exception {
+
+        String fName = "";
+
+        if (filename.contains(".csv")){
+            fName = filename;
+        }else {
+            fName=filename.concat(".csv");
+        }
+
+        InputStreamResource file = downloadUsecase.downloadCSVFromSnowflake(fName);
+
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + fName)
                 .contentType(MediaType.parseMediaType("application/csv"))
                 .body(file);
     }

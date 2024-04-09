@@ -43,7 +43,7 @@ public class ForwardDataUsecase {
         try {
             // Insert to batch table
             String uuid = UUID.randomUUID().toString(); // used as batchid
-            int result = repository.insertBatchTable(StringUtils.substringBefore(request.getCsvfilename(), ".csv"), uuid);
+            int result = repository.insertBatchTable(StringUtils.substringBefore(request.getCsvfilename(), ".csv"), uuid, request.getCsvfilename());
 
 
             // Call LDHN Mock API

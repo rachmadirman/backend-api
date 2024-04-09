@@ -117,15 +117,15 @@ public class SnowflakeRepository {
         }
     }
 
-    public int insertBatchTable(String filename, String batchid) throws Exception {
+    public int insertBatchTable(String filename, String batchid, String filelink) throws Exception {
         String sql = "INSERT INTO POC_SAPURA.API_INGESTION.BATCH_TABLE\n" +
-                "(\"batchid\", \"csvfilename\", \"start_date\", \"end_date\", \"status\", \"submissionuuid\") VALUES\n"
+                "(\"batchid\", \"csvfilename\", \"start_date\", \"end_date\", \"status\", \"submissionuuid\", \"file_link\") VALUES\n"
                 +
-                "(?, ?, ?, ?, ?, ?)";
+                "(?, ?, ?, ?, ?, ?, ?)";
 
         try {
             int result = jdbcTemplate.update(sql, batchid, filename, CommonUtils.getCurrentDate(), null, "INPROGRESS",
-                    null);
+                    null, filelink);
             return result;
         } catch (Exception e) {
             e.printStackTrace();
