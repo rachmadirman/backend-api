@@ -48,6 +48,9 @@ public class MainController {
     @Autowired
     DownloadUsecase downloadUsecase;
 
+    @Autowired
+    FileController fileController;
+
 
 
     @GetMapping(value = "/fetch/batch", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -151,6 +154,16 @@ public class MainController {
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
+    }
+
+    // only to test sceduler call
+    @GetMapping(value = "/test/scheduler", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getScheduler(HttpServletRequest httpServletRequest) throws Exception, JsonProcessingException {
+
+        fileController.uploadFiles();
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body("Done call scheduler api");
     }
 
 }

@@ -13,6 +13,7 @@ import java.util.Base64;
 import java.util.List;
 
 import com.izeno.backendapi.entity.BatchDetailTable;
+import com.izeno.backendapi.entity.CSVData;
 import com.izeno.backendapi.model.ForwardRequest.CsvContent;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVPrinter;
@@ -59,9 +60,10 @@ public class CommonUtils {
     }
 
 
-    public static ByteArrayInputStream streamToCSV(List<BatchDetailTable> tableList){
+    public static ByteArrayInputStream streamToCSV(List<CSVData> tableList){
 
-        String[] header = {"batchid", "einvoicenumber",  "requestdate", "validationstatus","reason"};
+        String[] header = {"SupplierName","SupplierTIN","SupplierEmail","BuyerName","BuyerTIN","BuyerEmail",
+                "eInvoiceVersion","eInvoiceTypeCode","eInvoiceNumber","eInvoiceDate","eInvoiceCurrencyCode"};
         CSVFormat format = CSVFormat.DEFAULT.builder()
                 .setHeader(header)
                 .build();
@@ -71,13 +73,19 @@ public class CommonUtils {
             CSVPrinter csvPrinter = new CSVPrinter(new PrintWriter(out), format);
 
 
-            for (BatchDetailTable b : tableList){
+            for (CSVData b : tableList){
                 List<String> data = Arrays.asList(
-                        b.getBatchid(),
+                        b.getSuppliername(),
+                        b.getSuppliertin(),
+                        b.getSupplieremail(),
+                        b.getBuyername(),
+                        b.getBuyertin(),
+                        b.getBuyeremail(),
+                        b.getEinvoiceversion(),
+                        b.getEinvoicetypeCode(),
                         b.getEinvoicenumber(),
-                        b.getRequestdate(),
-                        b.getValidationstatus(),
-                        b.getReason()
+                        b.getEinvoicedate(),
+                        b.getEinvoicecurrencycode()
                 );
                 csvPrinter.printRecord(data);
             }

@@ -13,7 +13,7 @@ class BackendApiApplicationTests {
 	//	System.out.println(CommonUtils.getCurrentDate());
 	//	System.out.println(CommonUtils.stringToBase64("test"));
 
-	//	System.out.println(FileController.uploadFiles());
+	//System.out.println(FileController.uploadFiles());
 
 
 	}
