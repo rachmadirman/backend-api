@@ -39,8 +39,8 @@ public class FileController {
             //create snowflake connection
             Connection connection = SnowflakeConn.snowflakeConnection();
 
-            String path = "D:\\doc\\done";
-            //String path = "/opt/doc/done";
+            //String path = "D:\\doc\\done";
+            String path = "/opt/doc/done";
             String movePath = "D:\\doc\\done\\uploaded\\";
             //String movePath = "/opt/doc/reserve/";
             File[] filesInDirectory = new File(path).listFiles();
