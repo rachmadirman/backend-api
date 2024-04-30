@@ -14,6 +14,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -29,8 +30,24 @@ public class SnowflakeRepository {
         String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_TABLE ORDER BY \"start_date\" DESC ";
 
         try {
-            List<BatchTable> result = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(BatchTable.class));
-            log.info("[SUCCESS FETCH BATCH TABLE DATA, TOTAL : {}]", result.size());
+            List<BatchTable> resultQuery = jdbcTemplate.query(sql, new BeanPropertyRowMapper<>(BatchTable.class));
+            log.info("[SUCCESS FETCH BATCH TABLE DATA, TOTAL : {}]", resultQuery.size());
+
+            List<BatchTable> result = new ArrayList<>();
+            for (BatchTable b : resultQuery){
+                BatchTable data = new BatchTable();
+                data.setBatchid(b.getBatchid());
+                data.setCsvfilename(b.getCsvfilename());
+                data.setStart_date(CommonUtils.formatDate(b.getStart_date()));
+                data.setEnd_date(CommonUtils.formatDate(b.getEnd_date()));
+                data.setStatus(b.getStatus());
+                data.setSubmissionuuid(b.getSubmissionuuid());
+                data.setFileLink(b.getFileLink());
+
+                result.add(data);
+            }
+
+
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,9 +60,24 @@ public class SnowflakeRepository {
         String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE ORDER BY \"requestdate\" DESC ";
 
         try {
-            List<BatchDetailTable> result = jdbcTemplate.query(sql,
+            List<BatchDetailTable> resultQuery = jdbcTemplate.query(sql,
                     new BeanPropertyRowMapper<>(BatchDetailTable.class));
-            log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", result.size());
+            log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", resultQuery.size());
+
+            List<BatchDetailTable> result = new ArrayList<>();
+            for (BatchDetailTable b : resultQuery){
+                BatchDetailTable data = new BatchDetailTable();
+                data.setEinvoicenumber(b.getEinvoicenumber());
+                data.setEinvoicedocument(b.getEinvoicedocument());
+                data.setRequestdate(CommonUtils.formatDate(b.getRequestdate()));
+                data.setValidationstatus(b.getValidationstatus());
+                data.setBatchid(b.getBatchid());
+                data.setUuid(b.getUuid());
+                data.setReason(b.getReason());
+
+                result.add(data);
+            }
+
             return result;
         } catch (Exception e) {
             e.printStackTrace();
@@ -58,9 +90,24 @@ public class SnowflakeRepository {
         String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_DETATIL_TABLE WHERE \"batchid\" = ? ORDER BY \"requestdate\" DESC";
 
         try {
-            List<BatchDetailTable> result = jdbcTemplate.query(sql, new Object[]{batchId},
+            List<BatchDetailTable> resultQuery = jdbcTemplate.query(sql, new Object[]{batchId},
                     new BeanPropertyRowMapper<>(BatchDetailTable.class));
-            log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", result.size());
+            log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", resultQuery.size());
+
+            List<BatchDetailTable> result = new ArrayList<>();
+            for (BatchDetailTable b : resultQuery){
+                BatchDetailTable data = new BatchDetailTable();
+                data.setEinvoicenumber(b.getEinvoicenumber());
+                data.setEinvoicedocument(b.getEinvoicedocument());
+                data.setRequestdate(CommonUtils.formatDate(b.getRequestdate()));
+                data.setValidationstatus(b.getValidationstatus());
+                data.setBatchid(b.getBatchid());
+                data.setUuid(b.getUuid());
+                data.setReason(b.getReason());
+
+                result.add(data);
+            }
+
             return result;
         } catch (Exception e) {
             e.printStackTrace();

@@ -5,16 +5,16 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
 @Data
-@JsonPropertyOrder({"batch_id", "file_link","start_date", "end_date", "status", "csv_filename", "submission_uuid"})
+@JsonPropertyOrder({"batch_id", "file_link","start_date time", "end_date time", "status", "csv_filename", "submission_uuid"})
 public class BatchTable {
 
     @JsonProperty("batch_id")
     private String batchid;
     @JsonProperty("csv_filename")
     private String csvfilename;
-    @JsonProperty("start_date")
+    @JsonProperty("start_date time")
     private String start_date;
-    @JsonProperty("end_date")
+    @JsonProperty("end_date time")
     private String end_date;
     @JsonProperty("status")
     private String status;

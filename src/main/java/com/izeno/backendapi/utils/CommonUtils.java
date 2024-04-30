@@ -4,13 +4,12 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.List;
+import java.util.*;
 
 import com.izeno.backendapi.entity.BatchDetailTable;
 import com.izeno.backendapi.entity.CSVData;
@@ -27,6 +26,13 @@ public class CommonUtils {
         ZoneId zoneId = ZoneId.of("Asia/Jakarta");
 
         return currentDateTime.atZone(zoneId).format(formatter);
+    }
+
+    public static String formatDate(String date) throws ParseException {
+        SimpleDateFormat format1 = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat format2 = new SimpleDateFormat("dd-MMM-yyyy HH:mm:ss");
+        Date dt = format1.parse(date);
+        return format2.format(dt);
     }
 
     public static String stringToBase64(String input) {

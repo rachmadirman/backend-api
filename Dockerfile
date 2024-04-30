@@ -1,4 +1,5 @@
 FROM  openjdk:17-jdk
+ENV TZ="Asia/Jakarta"
 ENV java_opts="--add-opens=java.base/java.nio=ALL-UNNAMED"
 ENV java_args=""
 COPY target/backend-api-0.0.1-SNAPSHOT.jar app.jar
