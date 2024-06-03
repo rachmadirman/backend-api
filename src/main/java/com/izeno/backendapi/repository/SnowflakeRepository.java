@@ -68,12 +68,7 @@ public class SnowflakeRepository {
             for (BatchDetailTable b : resultQuery){
                 BatchDetailTable data = new BatchDetailTable();
                 data.setEinvoicenumber(b.getEinvoicenumber());
-                data.setEinvoicedocument(b.getEinvoicedocument());
                 data.setRequestdate(CommonUtils.formatDate(b.getRequestdate()));
-                data.setValidationstatus(b.getValidationstatus());
-                data.setBatchid(b.getBatchid());
-                data.setUuid(b.getUuid());
-                data.setReason(b.getReason());
 
                 result.add(data);
             }
@@ -98,12 +93,7 @@ public class SnowflakeRepository {
             for (BatchDetailTable b : resultQuery){
                 BatchDetailTable data = new BatchDetailTable();
                 data.setEinvoicenumber(b.getEinvoicenumber());
-                data.setEinvoicedocument(b.getEinvoicedocument());
                 data.setRequestdate(CommonUtils.formatDate(b.getRequestdate()));
-                data.setValidationstatus(b.getValidationstatus());
-                data.setBatchid(b.getBatchid());
-                data.setUuid(b.getUuid());
-                data.setReason(b.getReason());
 
                 result.add(data);
             }
@@ -153,15 +143,15 @@ public class SnowflakeRepository {
 
 
     public List<UserConfig> fetchUserConfig() throws Exception {
-        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.USER_TABLE";
+        String sql = "SELECT * FROM EINVOICE.API_INGESTION.USER_TABLE";
 
         try {
             List<UserConfig> result = jdbcTemplate.query(sql,  new BeanPropertyRowMapper<>(UserConfig.class));
-            log.info("[SUCCESS FETCH BATCH TABLE DETAIL DATA, TOTAL : {}]", result.size());
+            log.info("[SUCCESS FETCH LHDN CONFIG, TOTAL : {}]", result.size());
             return result;
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());
+            log.error("[FAILED TO GET LHDN CONFIG : {}]", e.getMessage());
             throw new Exception();
         }
     }
@@ -169,10 +159,11 @@ public class SnowflakeRepository {
     public PayloadRs updateUserConfig(UserConfig req) throws Exception {
 
         PayloadRs payloadRs = new PayloadRs();
-        String sql = "UPDATE POC_SAPURA.API_INGESTION.USER_TABLE SET \"apiurl\" = ?, \"clientid\" = ?, \"token\" = ?, \"environment\" = ?";
+        String sql = "UPDATE EINVOICE.API_INGESTION.USER_TABLE SET \"apiurl\" = ?, \"clientid\" = ?, \"token\" = ?, \"environment\" = ?";
 
         try {
             int  result = jdbcTemplate.update(sql,  req.getApiurl(), req.getClientid(), req.getToken(), req.getEnvironment());
+            log.info("[SUCCESS UPDATE LHDN CONFIG, TOTAL : {}]", result);
 
             payloadRs.setStatus("Success");
             payloadRs.setStatusDescription("Success update LHDN Config");
@@ -181,7 +172,7 @@ public class SnowflakeRepository {
             return payloadRs;
         } catch (Exception e) {
             e.printStackTrace();
-            log.error("[FAILED TO GET BATCH TABLE DATA : {}]", e.getMessage());
+            log.error("[FAILED TO UPDATE LHDN CONFIG : {}]", e.getMessage());
             throw new Exception();
         }
     }

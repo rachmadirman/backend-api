@@ -5,21 +5,10 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import lombok.Data;
 
 @Data
-@JsonPropertyOrder({ "batch_id", "einvoice_number", "einvoice_document", "request_date time", "validation_status",
-        "reference_id", "reason" })
+@JsonPropertyOrder({ "einvoice_number", "request_date time"})
 public class BatchDetailTable {
     @JsonProperty("einvoice_number")
     private String einvoicenumber;
-    @JsonProperty("einvoice_document")
-    private String einvoicedocument;
     @JsonProperty("request_date time")
     private String requestdate;
-    @JsonProperty("validation_status")
-    private String validationstatus;
-    @JsonProperty("batch_id")
-    private String batchid;
-    @JsonProperty("reference_id")
-    private String uuid;
-    @JsonProperty("reason")
-    private String reason;
 }

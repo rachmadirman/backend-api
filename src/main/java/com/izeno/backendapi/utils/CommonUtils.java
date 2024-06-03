@@ -104,4 +104,27 @@ public class CommonUtils {
             throw new RuntimeException(e);
         }
     }
+
+    //not best practice only temporary
+    public static String encPass(String role){
+        if (role.equalsIgnoreCase("Kennard")){
+            return "891102iZeno";
+        } else if (role.equalsIgnoreCase("KEVIN")){
+            return "KN-123#Izeno";
+        }
+        else {
+            return "not found";
+        }
+    }
+
+    public static String account(String role){
+        if (role.equalsIgnoreCase("Kennard")){
+            return "br00321";
+        } else if (role.equalsIgnoreCase("KEVIN")){
+            return "fx33697";
+        }
+        else {
+            return "not found";
+        }
+    }
 }

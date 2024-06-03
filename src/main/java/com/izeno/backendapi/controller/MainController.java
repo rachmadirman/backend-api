@@ -1,11 +1,9 @@
 package com.izeno.backendapi.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.izeno.backendapi.entity.BatchDetailTable;
-import com.izeno.backendapi.entity.BatchTable;
-import com.izeno.backendapi.entity.SubmitMockResponse;
-import com.izeno.backendapi.entity.UserConfig;
+import com.izeno.backendapi.entity.*;
 import com.izeno.backendapi.model.ForwardRequestV2;
+import com.izeno.backendapi.model.LoginReq;
 import com.izeno.backendapi.model.PayloadRs;
 import com.izeno.backendapi.repository.SnowflakeRepository;
 import com.izeno.backendapi.service.CSVService;
@@ -53,29 +51,51 @@ public class MainController {
 
 
 
-    @GetMapping(value = "/fetch/batch", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> getAllData(HttpServletRequest httpServletRequest) throws Exception {
+    @GetMapping(value = "/fetch/batch/{user}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getAllData(@PathVariable String user,
+                                        HttpServletRequest httpServletRequest) throws Exception {
 
-        List<BatchTable> result = snowflakeRepository.fetchBatchTable();
-
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(result);
-    }
-
-    @GetMapping(value = "/fetch/details", produces = { MediaType.APPLICATION_JSON_VALUE })
-    public ResponseEntity<?> getDetailsData(HttpServletRequest httpServletRequest) throws Exception {
-
-        List<BatchDetailTable> result = snowflakeRepository.fetchBatchDetailTable();
+        //List<BatchTable> result = snowflakeRepository.fetchBatchTable();
+        log.info("**START FETCH BATCH DATA**");
+        List<BatchTable> result = forwardDataUsecase.fetchBatchData(user);
+        log.info("**FINISH FETCH BATCH DATA**");
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
     }
 
-    @GetMapping(value = "/fetch/detailsbyid/{id}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    @GetMapping(value = "/fetch/details/{user}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getDetailsData(@PathVariable String user,
+            HttpServletRequest httpServletRequest) throws Exception {
+
+        //List<BatchDetailTable> result = snowflakeRepository.fetchBatchDetailTable();
+        List<BatchDetailTable> result = forwardDataUsecase.fetchBatchDetail(user);
+        log.info("**FINISH FETCH BATCH DETAILS**");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(result);
+    }
+
+    @GetMapping(value = "/fetch/detailsbyid/{id}/{user}", produces = { MediaType.APPLICATION_JSON_VALUE })
     public ResponseEntity<?> getDetailsDataById(@PathVariable String id,
+                                                       @PathVariable String user,
                                                        HttpServletRequest httpServletRequest) throws Exception {
 
-        List<BatchDetailTable> result = snowflakeRepository.fetchBatchDetailTableById(id);
+        //List<BatchDetailTable> result = snowflakeRepository.fetchBatchDetailTableById(id);
+        List<BatchDetailTableAll> result = forwardDataUsecase.fetchBatchDetailById(id, user);
+        log.info("**FINISH FETCH BATCH DETAILS BY ID**");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(result);
+    }
+
+    @GetMapping(value = "/fetch/detailsbyinvno/{invno}/{user}", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> getDetailsDataByInvNo(@PathVariable String invno,
+                                                @PathVariable String user,
+                                                HttpServletRequest httpServletRequest) throws Exception {
+
+        List<BatchDetailTableByInvoice> result = forwardDataUsecase.fetchBatchDetailByinvNo(invno, user);
+        log.info("**FINISH FETCH BATCH DETAILS BY INVNO**");
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(result);
@@ -139,6 +159,16 @@ public class MainController {
             HttpServletRequest httpServletRequest) {
 
         PayloadRs payloadRs = forwardDataUsecase.forwardRequest(request);
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(payloadRs);
+    }
+
+    @PostMapping(value = "/login", produces = { MediaType.APPLICATION_JSON_VALUE })
+    public ResponseEntity<?> validateLogin(@RequestBody LoginReq request,
+                                         HttpServletRequest httpServletRequest)  {
+
+        PayloadRs payloadRs = forwardDataUsecase.login(request);
 
         return ResponseEntity.status(HttpStatus.OK)
                 .body(payloadRs);
