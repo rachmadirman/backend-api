@@ -28,7 +28,7 @@ public class FileController {
     SnowflakeRepository repository;
 
 
-    @Scheduled(cron = "1 * * * * *")
+    //@Scheduled(cron = "1 * * * * *")
     public void uploadFiles()  {
 
 

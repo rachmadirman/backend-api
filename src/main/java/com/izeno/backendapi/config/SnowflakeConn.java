@@ -65,4 +65,29 @@ public class SnowflakeConn {
         log.info("CURRENT USED URL : {}", url);
         return DriverManager.getConnection(url, props);
     }
+
+    public static Connection initSnowflake(String username, String password, String account) throws Exception {
+
+        Properties props = new Properties();
+
+        String url = "jdbc:snowflake://" + account + ".snowflakecomputing.com/";
+        if (Files.exists(Paths.get("/snowflake/session/token"))) {
+            props.put("CLIENT_SESSION_KEEP_ALIVE", true);
+            props.put("account", account);
+            props.put("authenticator", "OAUTH");
+            props.put("token", new String(Files.readAllBytes(Paths.get("/snowflake/session/token"))));
+            props.put("warehouse", "COMPUTE_WH");
+            props.put("role", "sysadmin");
+            url = "jdbc:snowflake://" + account +".snowflakecomputing.com" + ":" + "443";
+        }else {
+            props.put("CLIENT_SESSION_KEEP_ALIVE", true);
+            props.put("account", account);
+            props.put("user", username);
+            props.put("password", password);
+            props.put("role", "sysadmin");
+            props.put("warehouse", "COMPUTE_WH");
+        }
+        log.info("CURRENT USED URL : {}", url);
+        return DriverManager.getConnection(url, props);
+    }
 }

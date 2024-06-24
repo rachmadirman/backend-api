@@ -1,9 +1,6 @@
 package com.izeno.backendapi.repository;
 
-import com.izeno.backendapi.entity.BatchDetailTable;
-import com.izeno.backendapi.entity.BatchTable;
-import com.izeno.backendapi.entity.CSVData;
-import com.izeno.backendapi.entity.UserConfig;
+import com.izeno.backendapi.entity.*;
 import com.izeno.backendapi.model.PayloadRs;
 import com.izeno.backendapi.utils.CommonUtils;
 import jakarta.validation.Payload;
@@ -263,4 +260,38 @@ public class SnowflakeRepository {
             throw new Exception();
         }
     }
+
+    public void insertConfig(String account, String db, String schema, String user) throws Exception {
+        try {
+
+            String sql = "insert into einvoice.api_ingestion.provisioning_table(\"Account\", \"Warehouse\", " +
+                    "\"Database\", \"Schema\", \"User\", \"Role\", \"CreationDate\", \"UpdateDate\")\n" +
+                    "values (?, ?, ?, ?, ?, ?, ?, ?)";
+
+            int result = jdbcTemplate.update(sql, account, "COMPUTE_WH", db, schema, user, "sysadmin", CommonUtils.getCurrentDate(), "");
+            log.info("[INSERTED ROW USER CONFIG : {}]", result);
+
+        }catch (Exception e){
+            log.error("[FAILED INSERT CONFIG : {}]", e.getMessage());
+            throw new Exception();
+        }
+    }
+    public List<ProvUserEntity> getUserConfig(String user) throws Exception {
+        String sql = "Select \"id\", \"Account\", \"Warehouse\", \"Database\", \"Schema\", \"User\", \"Role\", \"CreationDate\", \"UpdateDate\"\n" +
+                "from EINVOICE.API_INGESTION.PROVISIONING_TABLE where \"User\" = ?";
+
+        try {
+            List<ProvUserEntity> provUserEntity = jdbcTemplate.query(sql, new Object[]{user},
+                    new BeanPropertyRowMapper<>(ProvUserEntity.class));
+
+            return provUserEntity;
+
+        }catch (Exception e){
+            e.printStackTrace();
+            log.error("[FAILED INSERT CONFIG : {}]", e.getLocalizedMessage());
+            throw new Exception();
+        }
+    }
+
+
 }

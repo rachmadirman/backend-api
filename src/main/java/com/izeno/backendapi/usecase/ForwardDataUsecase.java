@@ -141,14 +141,17 @@ public class ForwardDataUsecase {
         return payloadRs;
     }
 
-    public List<BatchTable> fetchBatchData(String user)  {
+    public List<BatchTable> fetchBatchData(String user) throws Exception {
+
+        //Get warehouse, db, and schema
+        List<ProvUserEntity> provUserEntity = repository.getUserConfig(user);
         //init
-        String sql = "SELECT * FROM POC_SAPURA.API_INGESTION.BATCH_TABLE ORDER BY \"start_date\" DESC ";
+        String sql = String.format("SELECT * FROM %s.%s.BATCH_TABLE ORDER BY \"start_date\" DESC ", provUserEntity.get(0).getDatabase(), provUserEntity.get(0).getSchema());
         List<BatchTable> result = new ArrayList<>();
         try {
 
             //validate user and password
-            Connection connection = SnowflakeConn.snowflakeConnection(user, CommonUtils.encPass(user), CommonUtils.account(user));
+            Connection connection = SnowflakeConn.initSnowflake(user, CommonUtils.encPass(user), provUserEntity.get(0).getAccount());
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery(sql);
 
@@ -161,6 +164,8 @@ public class ForwardDataUsecase {
                 b.setStatus(String.valueOf(rs.getObject("status")));
                 b.setSubmissionuuid(String.valueOf(rs.getObject("submissionuuid")));
                 b.setFileLink(String.valueOf(rs.getObject("file_link")));
+                b.setSubmittedby(String.valueOf(rs.getObject("submittedby")));
+                b.setTenantid(String.valueOf(rs.getObject("tenantid")));
 
                 result.add(b);
             }

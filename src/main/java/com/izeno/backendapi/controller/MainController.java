@@ -68,8 +68,8 @@ public class MainController {
     public ResponseEntity<?> getDetailsData(@PathVariable String user,
             HttpServletRequest httpServletRequest) throws Exception {
 
-        //List<BatchDetailTable> result = snowflakeRepository.fetchBatchDetailTable();
-        List<BatchDetailTable> result = forwardDataUsecase.fetchBatchDetail(user);
+        List<BatchDetailTable> result = snowflakeRepository.fetchBatchDetailTable();
+        //List<BatchDetailTable> result = forwardDataUsecase.fetchBatchDetail(user);
         log.info("**FINISH FETCH BATCH DETAILS**");
 
         return ResponseEntity.status(HttpStatus.OK)

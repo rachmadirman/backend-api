@@ -108,7 +108,7 @@ public class CommonUtils {
     //not best practice only temporary
     public static String encPass(String role){
         if (role.equalsIgnoreCase("Kennard")){
-            return "891102iZeno";
+            return "2024iZeno#1";
         } else if (role.equalsIgnoreCase("KEVIN")){
             return "KN-123#Izeno";
         }
